@@ -59,25 +59,6 @@
       }
     }
   },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": "airbnb",
-    "env": {
-      "browser": true,
-      "node": true,
-      "mocha": true
-    },
-    "rules": {
-      "max-len": 0
-    },
-    "settings": {
-      "import/resolver": {
-        "webpack": {
-          "config": "./internals/webpack/webpack.test.babel.js"
-        }
-      }
-    }
-  },
   "stylelint": {
     "extends": "stylelint-config-standard",
     "rules": {
