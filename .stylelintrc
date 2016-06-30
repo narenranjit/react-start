@@ -1,0 +1,11 @@
+{
+    "rules": {
+        "time-no-imperceptible": true,
+        "length-zero-no-unit": true,
+        "unit-no-unknown": true,
+        "shorthand-property-no-redundant-values": true,
+        "selector-attribute-brackets-space-inside": "never",
+        
+        "indentation": 4
+    }
+}
