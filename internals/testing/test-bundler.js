@@ -5,9 +5,23 @@ import 'babel-polyfill';
 // If we need to use Chai, we'll have already chaiEnzyme loaded
 import chai from 'chai';
 import chaiEnzyme from 'chai-enzyme';
+
+// import sinon from 'sinon';
+// import sinonChai from 'sinon-chai';
+// import chaiAsPromised from 'chai-as-promised';
+
+// chai.use(sinonChai);
+// chai.use(chaiAsPromised);
 chai.use(chaiEnzyme());
 
-// Include all .js files under `app`, except app.js, reducers.js, routes.js and
-// store.js. This is for isparta code coverage
-const context = require.context('../../app', true, /^^((?!(app|reducers|routes|store)).)*\.js$/);
-context.keys().forEach(context);
+// global.sinon = sinon;
+global.expect = chai.expect;
+global.should = chai.should();
+
+// require all `tests/**/*.spec.js`
+const testsContext = require.context('../../tests', true, /-test\.js$/);
+testsContext.keys().forEach(testsContext);
+
+// require all `src/**/*.js` except for `main.js` (for isparta coverage reporting)
+// const componentsContext = require.context('../../app/', true, /^((?!main).)*\.js$/);
+// componentsContext.keys().forEach(componentsContext);
