@@ -5,10 +5,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
 
-// PostCSS plugins
-const cssnext = require('postcss-cssnext');
-const postcssFocus = require('postcss-focus');
-const postcssReporter = require('postcss-reporter');
+// webpackConfig.module.loaders.push({
+//     test: /\.scss$/,
+//     include: /src/,
+//     loaders: [
+//         'style',
+//         'css?sourceMap',
+//         'sass?sourceMap'
+//     ]
+// });
 
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
@@ -29,16 +34,6 @@ module.exports = require('./webpack.base.babel')({
     'css-loader?modules&importLoaders=1!postcss-loader'
   ),
 
-  // In production, we minify our CSS with cssnano
-  postcssPlugins: [
-    postcssFocus(),
-    cssnext({
-      browsers: ['last 2 versions', 'IE > 10'],
-    }),
-    postcssReporter({
-      clearMessages: true,
-    }),
-  ],
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
