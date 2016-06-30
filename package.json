@@ -23,7 +23,7 @@
     "start:prod": "cross-env NODE_ENV=production node server",
     "pagespeed": "node ./internals/scripts/pagespeed.js",
     "lint": "npm run lint:js && npm run lint:css",
-    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern internals/scripts",
+    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern internals --ignore-pattern server/",
     "lint:js": "npm run lint:eslint -- . ",
     "lint:css": "stylelint ./app/**/*.css",
     "lint:staged": "lint-staged",
