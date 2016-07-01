@@ -27,6 +27,7 @@ module.exports = {
       { test: /\.js$/,
         loader: 'isparta',
         include: path.resolve('app/'),
+        exclude: [/node_modules/]
       },
     ],
     loaders: [

@@ -37,18 +37,10 @@ module.exports = (config) => {
       noInfo: true,
       stats: 'errors-only',
     },
-
-    customLaunchers: {
-      ChromeTravis: {
-        base: 'Chrome',
-        flags: ['--no-sandbox'],
-      },
-    },
-
     coverageReporter: {
       dir: path.join(process.cwd(), 'tests/coverage'),
       reporters: [
-        { type: 'lcov', subdir: 'lcov' },
+        { type: 'lcovonly', subdir: 'lcov' },
         { type: 'html', subdir: 'html' },
         { type: 'text-summary' },
       ],
