@@ -1,5 +1,5 @@
 # Don't check auto-generated stuff into git
-coverage
+tests/coverage
 dist
 node_modules
 stats.json

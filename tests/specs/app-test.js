@@ -4,8 +4,10 @@
 
 // import expect from 'expect';
 
-describe('configureStore', ()=> {
-    it('should contain an object for async reducers', ()=> {
-        expect(1).to.equal(1);
+import { add } from 'something-else';
+
+describe('Something Else', ()=> {
+    it('should add', ()=> {
+        expect(add(1, 2)).to.equal(3);
     });
 });

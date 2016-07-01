@@ -1,5 +1,2 @@
-console.log('something-else.js');
-export default function() {
-
-    console.log('fun');
-}
+export const add = (a, b)=> a + b;
+export const mul = (a, b)=> a * b;

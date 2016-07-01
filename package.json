@@ -30,8 +30,7 @@
     "test:firefox": "npm run test -- --browsers Firefox",
     "test:safari": "npm run test -- --browsers Safari",
     "test:chrome": "npm run test -- --browsers Chrome",
-    "test:ie": "npm run test -- --browsers IE",
-    "coveralls": "cat ./coverage/lcov/lcov.info | coveralls"
+    "test:ie": "npm run test -- --browsers IE"
   },
   "lint-staged": {
     "lint:eslint": "*.js",
@@ -101,7 +100,6 @@
     "chalk": "^1.1.3",
     "cheerio": "^0.20.0",
     "compression": "^1.6.1",
-    "coveralls": "^2.11.9",
     "cross-env": "^1.0.7",
     "css-loader": "^0.23.1",
     "enzyme": "^2.2.0",
