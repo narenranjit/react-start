@@ -5,21 +5,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
 
-// webpackConfig.module.loaders.push({
-//     test: /\.scss$/,
-//     include: /src/,
-//     loaders: [
-//         'style',
-//         'css?sourceMap',
-//         'sass?sourceMap'
-//     ]
-// });
-
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
-  entry: [
-    path.join(process.cwd(), 'app/main.js'),
-  ],
+    entry: {
+        vendor: ['react', 'react-dom', 'lodash'],
+        main: path.join(process.cwd(), 'app/main.js'),
+    },
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
@@ -37,10 +28,10 @@ module.exports = require('./webpack.base.babel')({
 
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      children: true,
-      minChunks: 2,
-      async: true,
+      names: ['vendor'],
+      // children: true,
+      minChunks: Infinity,
+      // async: true,
     }),
 
     // OccurrenceOrderPlugin is needed for long-term caching to work properly.
@@ -51,11 +42,11 @@ module.exports = require('./webpack.base.babel')({
     new webpack.optimize.DedupePlugin(),
 
     // Minify and optimize the JavaScript
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false, // ...but do not show warnings in the console (there is a lot of them)
-      },
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false, // ...but do not show warnings in the console (there is a lot of them)
+    //   },
+    // }),
 
     // Minify and optimize the index.html
     new HtmlWebpackPlugin({
