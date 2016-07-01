@@ -4,11 +4,12 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
+const pkg = require(path.join(process.cwd(), 'package.json'))
 
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
     entry: {
-        vendor: ['react', 'react-dom', 'lodash'],
+        vendor: Object.keys(pkg.dependencies),
         main: path.join(process.cwd(), 'app/main.js'),
     },
 
@@ -42,11 +43,11 @@ module.exports = require('./webpack.base.babel')({
     new webpack.optimize.DedupePlugin(),
 
     // Minify and optimize the JavaScript
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: false, // ...but do not show warnings in the console (there is a lot of them)
-    //   },
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false, // ...but do not show warnings in the console (there is a lot of them)
+      },
+    }),
 
     // Minify and optimize the index.html
     new HtmlWebpackPlugin({
