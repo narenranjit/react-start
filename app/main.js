@@ -12,7 +12,10 @@ import ReactDOM from 'react-dom';
 import { add } from './something-else';
 import './app.scss';
 
+import _ from 'lodash';
+
+const last = _.last([2, 4, 5]);
 ReactDOM.render(
-    <h1>Hello World { add(1, 2) }</h1>,
+    <h1>Hello World { add(1, 2) } { last }</h1>,
     document.getElementById('app')
 );
