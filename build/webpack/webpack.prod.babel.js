@@ -4,17 +4,32 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
-const pkg = require(path.join(process.cwd(), 'package.json'))
+const pkg = require(path.join(process.cwd(), 'package.json'));
 
+const deps = Object.keys(pkg.dependencies);
+const externals = {
+    lodash: {
+        root: "_",
+        commonjs: "lodash",
+        commonjs2: "lodash",
+        amd: "lodash"
+     }
+};
+
+const vendor = deps;
+// const vendor = deps.filter((dep)=> !externals[dep]);
+console.log(vendor);
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
     entry: {
-        vendor: Object.keys(pkg.dependencies),
+        vendor: vendor,
         main: path.join(process.cwd(), 'app/main.js'),
     },
+    externals: externals,
 
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
+    libraryTarget: "umd",
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].chunk.js',
   },
