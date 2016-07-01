@@ -2,10 +2,12 @@ const webpackConfig = require('../webpack/webpack.test.babel');
 const argv = require('minimist')(process.argv.slice(2));
 const path = require('path');
 
+
 module.exports = (config) => {
+    const reporters = argv['auto-watch'] ? ['mocha'] : ['coverage', 'mocha'];
   config.set({
     frameworks: ['mocha'],
-    reporters: ['coverage', 'mocha'],
+    reporters: reporters,
     browsers: ['PhantomJS'],
 
     autoWatch: false,
