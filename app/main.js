@@ -13,8 +13,10 @@ import { add } from './something-else';
 import './app.scss';
 
 import _ from 'lodash';
+const jQuery = require('jquery');
 
 const last = _.last([2, 4, 5]);
+console.log(jQuery);
 ReactDOM.render(
     <h1>Hello World { add(1, 2) } { last }</h1>,
     document.getElementById('app')

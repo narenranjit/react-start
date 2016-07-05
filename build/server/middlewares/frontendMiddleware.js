@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const compression = require('compression');
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
+const resolve = require('path').resolve;
 
 // Dev middleware
 const addDevMiddlewares = (app, webpackConfig)=> {
@@ -19,6 +20,9 @@ const addDevMiddlewares = (app, webpackConfig)=> {
 
     app.use(middleware);
     app.use(webpackHotMiddleware(compiler));
+
+    const staticPath = resolve(process.cwd(), 'app/static');
+    app.use(express.static(staticPath));
 
     // Since webpackDevMiddleware uses memory-fs internally to store build
     // artifacts, we use it instead
