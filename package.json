@@ -33,7 +33,6 @@
     "lint:eslint": "*.js",
     "stylelint": "*.scss"
   },
-  "pre-commit": "lint:staged",
   "babel": {
     "presets": [
       "es2015-webpack",
