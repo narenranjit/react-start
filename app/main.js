@@ -12,6 +12,8 @@ import ReactDOM from 'react-dom';
 import { add } from './something-else';
 import './app.scss';
 
+import 'webcomponentsjs';
+
 import _ from 'lodash';
 const jQuery = require('jquery');
 
