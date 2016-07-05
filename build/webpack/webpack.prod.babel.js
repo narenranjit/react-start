@@ -5,21 +5,21 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
 const pkg = require(path.join(process.cwd(), 'package.json'));
+const fs = require('fs-extra');
 
 const deps = Object.keys(pkg.dependencies);
 const externals = {
-    "jquery": "jQuery",
+    jquery: 'jQuery',
     lodash: {
-        root: "_",
-        commonjs: "lodash",
-        commonjs2: "lodash",
-        amd: "lodash"
-     }
+        root: '_',
+        commonjs: 'lodash',
+        commonjs2: 'lodash',
+        amd: 'lodash'
+    }
 };
 
 const vendor = deps;
-// const vendor = deps.filter((dep)=> !externals[dep]);
-console.log(vendor);
+fs.copySync(path.join(process.cwd(), 'app/static'), path.join(process.cwd(), 'dist'));
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
     entry: {
