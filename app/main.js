@@ -6,12 +6,12 @@
  */
 import 'babel-polyfill';
 
-// Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { add } from './something-else';
 import './app.scss';
 
+import 'webcomponentsjs';
 import _ from 'lodash';
 const jQuery = require('jquery');
 

@@ -1,0 +1,207 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="contour-styles.htm">
+<style is="custom-style" include="base-contour"></style>
+
+<script src="../../bower_components/d3/d3.min.js" charset="utf-8"></script>
+<script src="../../bower_components/lodash/dist/lodash.min.js" charset="utf-8"></script>
+<script src="../../bower_components/Contour/dist/contour.min.js" charset="utf-8"></script>
+<dom-module id="contour-chart">
+
+  <template>
+   
+    <div class="chart-title">{{chartTitle}}</div>
+    <div id="chart" class="ui-element"></div>
+    <content></content>
+  </template>
+  <script>
+    (function () {
+      var formatter = function(v, fmt) {
+        return Flow.dom.converters.convert(v, fmt);
+      };
+      // make sure that if we have categories, they are inside the
+      // x,y pairs for the data.
+      var mergeXY = function (ds, cats) {
+        if (!cats)
+          return ds;
+        if (!_.isArray(ds) || !ds.length)
+          return ds;
+        var composeDatum = function (d, index) {
+          return {
+            x: d.x != null ? d.x : cats[index],
+            y: d.y != null ? d.y : d
+          };
+        };
+        if (_.isArray(ds[0].data)) {
+          _.each(ds, function (series) {
+            series.data = _.map(series.data, composeDatum);
+          });
+        } else {
+          ds = _.map(ds, composeDatum);
+        }
+        return ds;
+      };
+      var safeParse = function (value, defaultValue) {
+        var val = +value;
+        return val === val ? val : defaultValue;
+      };
+
+      Polymer({
+        is: 'contour-chart',
+        properties: {
+          categories: {
+            notify: true,
+            observer: 'categoriesChanged'
+          },
+          chartTitle: { notify: true },
+          // initialize the element's model
+          contourInstance: {
+            value: function () {
+              return undefined;
+            }
+          },
+          legend: {
+            notify: true,
+            observer: 'legendChanged'
+          },
+          source: {
+            notify: true,
+            observer: 'sourceChanged'
+          },
+          xLabelFormat: {
+            type: String,
+            value: '#',
+            notify: true
+          },
+          xTicks: { notify: true },
+          yAxisTitle: { 
+            notify: true,
+            observer: 'yAxisTitleChanged'
+
+          },
+          xAxisTitle: { 
+            notify: true,
+            observer: 'xAxisTitleChanged'
+          },
+          yLabelFormat: {
+            value: 's0',
+            notify: true,
+            observer: 'yAxisFormatChanged'
+          },
+          yTicks: { notify: true }
+        },
+        ready: function () {
+          var _this = this;
+          this.contourInstance = new Contour({
+            el: this.$.chart,
+            chart: { padding: { left: 50 }, animations:{ enable: true} },
+            xAxis: {
+              title: this.xAxisTitle,
+              ticks: safeParse(this.xTicks, undefined),
+              labels: { format: _this._xLabelFormat || '.0d' }
+            },
+            yAxis: {
+              title: this.yAxisTitle,
+              ticks: safeParse(this.yTicks, undefined),
+              nicing: false,
+              labels: {
+                formatter: function (v) {
+                  return formatter(v, _this.yLabelFormat || _this.contourInstance.options.yAxis.labels.format);
+                }
+              }
+            },
+            legend: {},
+            tooltip: {
+              formatter: function (d, name) {
+                return d.x + '<br>' + formatter(d.y, _this.yLabelFormat || '.2s');
+              }
+            }
+          }).cartesian();
+          this.contourInstance.render();
+        },
+        yAxisTitleChanged: function (newValue) {
+          if (!this.contourInstance) { return; } 
+          this.contourInstance.options.yAxis.title = newValue;
+          this.contourInstance.options.chart.animations.enable = false;
+          this.contourInstance.options.chart.animations.duration = 0;
+          this.contourInstance.render();
+        },
+        yAxisFormatChanged: function (newValue) {
+          if (!this.contourInstance) { return; } 
+          this.contourInstance.options.yAxis.labels.format = newValue;
+          this.contourInstance.options.chart.animations.enable = false;
+          this.contourInstance.options.chart.animations.duration = 0;
+          this.contourInstance.render();
+        },
+        xAxisTitleChanged: function (newValue) {
+          if (!this.contourInstance) { return; } 
+          this.contourInstance.options.xAxis.title = newValue;
+          this.contourInstance.options.chart.animations.enable = false;
+          this.contourInstance.options.chart.animations.duration = 0;
+          this.contourInstance.render();
+        },
+      
+        categoriesChanged: function (newValue, oldValue) {
+          if (_.isArray(newValue)) {
+            if (_.isArray(newValue[0])) {
+              this._categories = newValue[0];
+            } else {
+              this._categories = newValue;
+            }
+          } else {
+          }
+        },
+        // ignore it for now
+        legendChanged: function (newValue, oldValue) {
+          this._legends = newValue;
+          this.contourInstance.legend();
+        },
+        sourceChanged: function (newValue, oldValue) {
+          if (!newValue) newValue = [];
+          var ds = newValue;
+          var seriesNames = this._legends || [];
+          var cats = this._categories;
+          if (!_.isArray(ds) && _.isObject(ds)) {
+            ds = _.map(ds, function (data, name) {
+              return {
+                name: name,
+                data: data
+              };
+            });
+          }
+          ds = mergeXY(ds, cats);
+          this.dataset = ds;
+          this.contourInstance.options.chart.animations.enable = true;
+          this.contourInstance.options.chart.animations.duration = 200;
+          this.contourInstance.setData(ds).render();
+        }
+      });
+    }());
+  </script>
+</dom-module>
+
+
+<dom-module id="line-chart">
+  <template>
+  </template>
+  <script>
+    Polymer({
+      is: 'line-chart',
+      ready: function () {
+        Polymer.dom(this).parentNode.contourInstance.line([1,2], { marker: { enable: Polymer.dom(this).parentNode.markers !== 'false', animationDelay: 0 } }).tooltip();
+      }
+    });
+  </script>
+</dom-module>
+
+<dom-module id="column-chart">
+  <template>
+  </template>
+  <script>
+    Polymer({
+      is: 'column-chart',
+      ready: function () {
+        Polymer.dom(this).parentNode.contourInstance.column([1, 2]).tooltip();
+      }
+    });
+  </script>
+</dom-module>

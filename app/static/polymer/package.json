@@ -1,0 +1,80 @@
+{
+  "_args": [
+    [
+      "Polymer",
+      "/Users/narenranjit/Projects/react-boilerplate"
+    ]
+  ],
+  "_from": "Polymer@latest",
+  "_id": "Polymer@1.5.2",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/Polymer",
+  "_nodeVersion": "5.10.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/Polymer-1.5.2.tgz_1467727398463_0.8207616440486163"
+  },
+  "_npmUser": {
+    "email": "leybniz@gmail.com",
+    "name": "kpaxian"
+  },
+  "_npmVersion": "3.8.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "Polymer",
+    "raw": "Polymer",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/Polymer/-/Polymer-1.5.2.tgz",
+  "_shasum": "d2c99b6d16870963aed4bac7d18523c548eba8ea",
+  "_shrinkwrap": null,
+  "_spec": "Polymer",
+  "_where": "/Users/narenranjit/Projects/react-boilerplate",
+  "authors": [
+    "The Polymer Authors (http://polymer.github.io/AUTHORS.txt)"
+  ],
+  "bugs": {
+    "url": "https://github.com/Polymer/polymer/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "d2c99b6d16870963aed4bac7d18523c548eba8ea",
+    "tarball": "https://registry.npmjs.org/Polymer/-/Polymer-1.5.2.tgz"
+  },
+  "homepage": "https://github.com/Polymer/polymer#readme",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/util/",
+    "/explainer/",
+    "gulpfile.js",
+    "PRIMER.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md"
+  ],
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "maintainers": [
+    {
+      "email": "leybniz@gmail.com",
+      "name": "kpaxian"
+    }
+  ],
+  "name": "Polymer",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Polymer/polymer.git"
+  },
+  "scripts": {},
+  "version": "1.5.2"
+}
