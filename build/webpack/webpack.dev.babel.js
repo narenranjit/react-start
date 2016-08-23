@@ -11,6 +11,8 @@ const cheerio = require('cheerio');
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
 const dllPlugin = pkg.dllPlugin;
 
+const config = require('../config');
+
 const plugins = [
     new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
     new webpack.NoErrorsPlugin(),
@@ -25,17 +27,18 @@ module.exports = require('./webpack.base.babel')({
     entry: [
         'eventsource-polyfill', // Necessary for hot reloading with IE
         'webpack-hot-middleware/client',
-        path.join(process.cwd(), 'app/main.js'), // Start with js/app.js
+        path.join(process.cwd(), config.paths.source + '/main.js'), // Start with js/app.js
     ],
 
     // Don't use hashes in dev mode for better performance
     output: {
+        staticPath: path.join(process.cwd(), config.paths.static),
         filename: '[name].js',
         chunkFilename: '[name].chunk.js',
     },
 
     // Add development plugins
-    plugins: dependencyHandlers().concat(plugins), // eslint-disable-line no-use-before-define
+    plugins: [].concat(plugins), // eslint-disable-line no-use-before-define
 
     // Load the CSS in a style tag in development
     cssLoaders: ['style', 'css?sourceMap&localIdentName=[local]__[path][name]__[hash:base64:5]', 'sass?sourceMap'],
@@ -44,7 +47,9 @@ module.exports = require('./webpack.base.babel')({
     babelQuery: {
         presets: ['react-hmre'],
     },
-
+    resolve: {
+        modules: [config.paths.source]
+    },
     // Emit a source map for easier debugging
     devtool: 'source-map',
 });
@@ -125,7 +130,7 @@ function dependencyHandlers() {
  */
 function templateContent() {
     const html = fs.readFileSync(
-        path.resolve(process.cwd(), 'app/index.html')
+        path.resolve(process.cwd(), config.paths.source + '/index.html')
     ).toString();
 
     if (!dllPlugin) { return html; }

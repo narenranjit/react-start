@@ -10,12 +10,17 @@ const ngrok = (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel ? require('ngr
 const resolve = require('path').resolve;
 const app = express();
 
-// If you need a backend, e.g. an API, add your custom backend-specific middleware here
-// app.use('/api', myApi);
+let configFile = 'webpack.projectfiles.dev.babel';
+if (process.env.WEBPACK_CONFIG) {
+    configFile = `webpack.${process.env.WEBPACK_CONFIG}.babel`;
+}
+const webpackConfig = require(`../webpack/${configFile}`);
 
 // In production we need to pass these values in instead of relying on webpack
 setup(app, {
     outputPath: resolve(process.cwd(), 'dist'),
+    staticPath: resolve(process.cwd(), 'app/static'),
+    webpackConfig: webpackConfig,
     publicPath: '/',
 });
 

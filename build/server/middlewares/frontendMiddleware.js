@@ -3,7 +3,8 @@ const express = require('express');
 const path = require('path');
 const compression = require('compression');
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
-const resolve = require('path').resolve;
+const proxy = require('http-proxy-middleware');
+const _ = require('lodash');
 
 // Dev middleware
 const addDevMiddlewares = (app, webpackConfig)=> {
@@ -20,9 +21,14 @@ const addDevMiddlewares = (app, webpackConfig)=> {
 
     app.use(middleware);
     app.use(webpackHotMiddleware(compiler));
+    
+    _.each(webpackConfig.proxy, (proxySettings, path)=> {
+        app.use(path, proxy(proxySettings));
+    });
 
-    const staticPath = resolve(process.cwd(), 'app/static');
-    app.use(express.static(staticPath));
+    // const staticPath = path.resolve(process.cwd(), webpackConfig.output.staticPath);
+    // console.log('static', staticPath);
+    app.use(express.static(webpackConfig.output.staticPath));
 
     // Since webpackDevMiddleware uses memory-fs internally to store build
     // artifacts, we use it instead
@@ -66,8 +72,7 @@ module.exports = (app, options)=> {
     if (isProd) {
         addProdMiddlewares(app, options);
     } else {
-        const webpackConfig = require('../../webpack/webpack.dev.babel');
-        addDevMiddlewares(app, webpackConfig);
+        addDevMiddlewares(app, options.webpackConfig);
     }
     return app;
 };

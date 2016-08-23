@@ -7,6 +7,8 @@ const OfflinePlugin = require('offline-plugin');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 const fs = require('fs-extra');
 
+const paths = require('../config').paths;
+
 const deps = Object.keys(pkg.dependencies);
 const externals = {
     jquery: 'jQuery',
@@ -19,96 +21,101 @@ const externals = {
 };
 
 const vendor = deps;
-fs.copySync(path.join(process.cwd(), 'app/static'), path.join(process.cwd(), 'dist'));
+fs.copySync(path.join(process.cwd(), paths.static), path.join(process.cwd(), paths.dist));
 module.exports = require('./webpack.base.babel')({
-  // In production, we skip all hot-reloading stuff
+    // In production, we skip all hot-reloading stuff
     entry: {
         vendor: vendor,
-        main: path.join(process.cwd(), 'app/main.js'),
+        main: path.join(process.cwd(), paths.source + '/main.js'),
     },
     externals: externals,
 
-  // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
-  output: {
-    publicPath: './',
-    filename: '[name].[chunkhash].js',
-    chunkFilename: '[name].[chunkhash].chunk.js',
-  },
+    devtool: 'source-map',
 
-  // We use ExtractTextPlugin so we get a seperate CSS file instead
-  // of the CSS being in the JS and injected as a style tag
-  cssLoaders: ExtractTextPlugin.extract(
-    'style-loader',
-    'css-loader?sourceMap!sass?sourceMap'
-  ),
+    // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
+    output: {
+        publicPath: './',
+        filename: '[name].js',
+        // filename: '[name].[chunkhash].js',
+        chunkFilename: '[name].chunk.js',
+        // chunkFilename: '[name].[chunkhash].chunk.js',
+    },
 
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor'],
-      // children: true,
-      minChunks: Infinity, //TODO: understand what this means
-      // async: true,
+    // We use ExtractTextPlugin so we get a seperate CSS file instead
+    // of the CSS being in the JS and injected as a style tag
+    cssLoaders: ExtractTextPlugin.extract({
+        notExtractLoader: 'style-loader',
+        loader: 'css-loader?sourceMap!sass?sourceMap' 
     }),
 
-    // OccurrenceOrderPlugin is needed for long-term caching to work properly.
-    // See http://mxs.is/googmv
-    new webpack.optimize.OccurrenceOrderPlugin(true),
+    plugins: [
+        new webpack.optimize.CommonsChunkPlugin({
+            names: ['vendor'],
+            // children: true,
+            minChunks: Infinity, //TODO: understand what this means
+            // async: true,
+        }),
 
-    // Merge all duplicate modules
-    new webpack.optimize.DedupePlugin(),
+        // OccurrenceOrderPlugin is needed for long-term caching to work properly.
+        // See http://mxs.is/googmv
+        new webpack.optimize.OccurrenceOrderPlugin(true),
 
-    // Minify and optimize the JavaScript
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false, // ...but do not show warnings in the console (there is a lot of them)
-      },
-    }),
+        // Merge all duplicate modules
+        new webpack.optimize.DedupePlugin(),
 
-    // Minify and optimize the index.html
-    new HtmlWebpackPlugin({
-      template: 'app/index.html',
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      },
-      inject: true,
-    }),
+        // Minify and optimize the JavaScript
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false, // ...but do not show warnings in the console (there is a lot of them)
+        //     },
+        // }),
 
-    // Extract the CSS into a seperate file
-    new ExtractTextPlugin('[name].[contenthash].css'),
+        // Minify and optimize the index.html
+        new HtmlWebpackPlugin({
+            template: paths.source + '/index.html',
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true,
+            },
+            inject: true,
+        }),
 
-    // Put it in the end to capture all the HtmlWebpackPlugin's
-    // assets manipulations and do leak its manipulations to HtmlWebpackPlugin
-    new OfflinePlugin({
-      // No need to cache .htaccess. See http://mxs.is/googmp,
-      // this is applied before any match in `caches` section
-      excludes: ['.htaccess'],
+        // Extract the CSS into a seperate file
+        new ExtractTextPlugin('[name].css'),
+        // new ExtractTextPlugin('[name].[contenthash].css'),
 
-      caches: {
-        main: [':rest:'],
+        // // Put it in the end to capture all the HtmlWebpackPlugin's
+        // // assets manipulations and do leak its manipulations to HtmlWebpackPlugin
+        // new OfflinePlugin({
+        //     // No need to cache .htaccess. See http://mxs.is/googmp,
+        //     // this is applied before any match in `caches` section
+        //     excludes: ['.htaccess'],
 
-        // All chunks marked as `additional`, loaded after main section
-        // and do not prevent SW to install. Change to `optional` if
-        // do not want them to be preloaded at all (cached only when first loaded)
-        additional: ['*.chunk.js'],
-      },
+        //     caches: {
+        //         main: [':rest:'],
 
-      // Removes warning for about `additional` section usage
-      safeToUseOptionalCaches: true,
+        //         // All chunks marked as `additional`, loaded after main section
+        //         // and do not prevent SW to install. Change to `optional` if
+        //         // do not want them to be preloaded at all (cached only when first loaded)
+        //         additional: ['*.chunk.js'],
+        //     },
 
-      AppCache: {
-        // Starting from offline-plugin:v3, AppCache by default caches only
-        // `main` section. This lets it use `additional` section too
-        caches: ['main', 'additional'],
-      },
-    }),
-  ],
+        //     // Removes warning for about `additional` section usage
+        //     safeToUseOptionalCaches: true,
+
+        //     AppCache: {
+        //         // Starting from offline-plugin:v3, AppCache by default caches only
+        //         // `main` section. This lets it use `additional` section too
+        //         caches: ['main', 'additional'],
+        //     },
+        // }),
+    ],
 });

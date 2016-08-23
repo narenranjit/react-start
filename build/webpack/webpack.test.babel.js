@@ -10,7 +10,7 @@ const modules = [
 ];
 
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   isparta: {
     babel: {
       presets: ['es2015', 'react', 'stage-0'],
